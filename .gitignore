@@ -1,0 +1,28 @@
+# Виртуальное окружение
+venv/
+.venv/
+env/
+ENV/
+
+# Кэш байт-кода Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Базы данных SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Отчёты о покрытии
+.coverage
+htmlcov/
+
+# Настройки редакторов
+.vscode/
+.idea/
+
+# Файлы операционных систем
+.DS_Store
+Thumbs.db

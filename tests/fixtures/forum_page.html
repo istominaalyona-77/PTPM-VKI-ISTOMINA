@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Тестовая тема форума</title>
+</head>
+<body>
+<div class="topic" id="topic-1">
+    <div class="post" data-comment-id="101">
+        <a class="post__author" href="/user/alice">alice</a>
+        <div class="post__message"><p>Привет, <b>мир</b>!</p></div>
+    </div>
+
+    <div class="post" data-comment-id="102">
+        <div class="post__author" data-author="bob">bob</div>
+        <div class="post__message"><p>Второе сообщение</p></div>
+    </div>
+
+    <article class="post" id="post-103">
+        <span class="username">alice</span>
+        <div class="message"><span>Ответ на <i>пост</i> 101</span></div>
+    </article>
+
+    <div class="post" data-comment-id="104">
+        <a class="post__author" href="/user/dave">dave</a>
+        <div class="post__message"><a href="#comment-104">ссылка на себя</a></div>
+    </div>
+
+    <div class="post">
+        <a class="post__author" href="/user/erin">erin</a>
+        <div class="post__message"><p>Пятое сообщение</p></div>
+        <a class="post__link" href="/topic/1#comment-105">ссылка на сообщение</a>
+    </div>
+
+    <div class="post post--service">
+        <span class="post__author">system</span>
+        <div class="post__message">Служебный блок без идентификатора</div>
+    </div>
+</div>
+</body>
+</html>

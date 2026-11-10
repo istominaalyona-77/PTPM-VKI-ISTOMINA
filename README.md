@@ -119,3 +119,58 @@ python -m unittest discover -s tests
 *   [Документация Requests ](https://pythonru.com/biblioteki/kratkoe-rukovodstvo-po-biblioteke-python-requests) — отправка HTTP-запросов, настройка заголовков (`Headers`) и сессий.
 *   [Документация Beautiful Soup 4 (en)](https://beautiful-soup-4.readthedocs.io/en/latest/) — поиск элементов на странице, работа с тегами, атрибутами и CSS-селекторами.
 *   [Документация Beautiful Soup 4 (ru)](https://www.crummy.com/software/BeautifulSoup/bs4/doc.ru/bs4ru.html) — неофициальный перевод руководства BS4 на русский язык.
+
+---
+
+## ✅ Реализация проекта
+
+### Структура
+
+```text
+PTPM-VKI-ISTOMINA/
+├── src/
+│   ├── __init__.py
+│   ├── database.py       # Модуль 1: класс DatabaseRepository
+│   └── parser.py         # Модуль 2: класс ForumParser
+├── tests/
+│   ├── __init__.py
+│   ├── fixtures/
+│   │   └── forum_page.html   # HTML-слепок страницы форума
+│   ├── test_database.py      # 24 теста репозитория
+│   └── test_parser.py        # 26 тестов парсера
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
+
+### Особенности реализации
+
+* **DatabaseRepository** — таблица `comments` в SQLite с ограничениями
+  `CHECK (length(...))`; методы `add`, `get_by_id`, `get_by_name`, `update`,
+  `delete`. Некорректные типы и длины — `ValidationError`, повторный ID —
+  `DuplicateCommentError`, отсутствующий ID при обновлении —
+  `CommentNotFoundError`.
+* **ForumParser** — `requests.get` с заголовком `User-Agent` и таймаутом,
+  разбор через `BeautifulSoup` (`lxml`). ID сообщения ищется в `data-*`-атрибутах,
+  в `id="post-..."` и в ссылках вида `#comment-123`; текст сохраняется вместе
+  с внутренней HTML-разметкой.
+* **Тесты** — 50 тестов `unittest`, покрытие `src/` — 100 %. Сеть не
+  используется: HTML берётся из фикстуры, а `requests.get` подменяется
+  заглушками `unittest.mock`.
+
+### Запуск
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python -m unittest discover -s tests -v
+```
+
+### Проверка покрытия (необязательно)
+
+```bash
+pip install coverage
+python -m coverage run --source=src -m unittest discover -s tests
+python -m coverage report -m
+```
