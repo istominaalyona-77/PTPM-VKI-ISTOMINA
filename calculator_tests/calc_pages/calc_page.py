@@ -25,8 +25,13 @@ class CalculatorPage:
         self.driver = driver
         self.wait = WebDriverWait(driver, timeout)
 
-    def open(self):
-        self.driver.get(self._URL)
+    def open(self, url=None):
+        """Открыть страницу калькулятора.
+
+        По умолчанию используется живой сайт, но тесты могут передать путь
+        к локальной копии, чтобы прогон не зависел от сети.
+        """
+        self.driver.get(url or self._URL)
         # Angular рендерит элементы динамически — ждём видимости, а не просто presence
         self.wait.until(EC.visibility_of_element_located(self._FIRST_INPUT))
 

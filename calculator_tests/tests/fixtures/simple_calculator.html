@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Simple Calculator — local copy for UI tests</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 32px; }
+    .calculator { max-width: 420px; }
+    table { border-collapse: collapse; }
+    td { padding: 6px 10px 6px 0; }
+    input, select, button { padding: 6px; font-size: 15px; }
+    b.result { display: inline-block; margin-top: 18px; font-size: 20px; min-height: 24px; }
+  </style>
+</head>
+<body>
+  <!--
+    Локальная копия страницы Simple Calculator с globalsqa.com.
+    Сохранена для того, чтобы UI-тесты не зависели от доступности сети.
+    Локаторы совпадают с оригинальной страницей, поэтому Page Object
+    работает и с живым сайтом (достаточно задать CALC_URL).
+  -->
+  <div class="calculator">
+    <h1>Simple Calculator</h1>
+
+    <table>
+      <tr>
+        <td>A</td>
+        <td><input id="a" ng-model="a" type="text" placeholder="First number"></td>
+        <td><button type="button" ng-click="incA()">+1</button></td>
+        <td><button type="button" ng-click="decA()">-1</button></td>
+      </tr>
+      <tr>
+        <td>Operation</td>
+        <td>
+          <select id="operation" ng-model="operation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>B</td>
+        <td><input id="b" ng-model="b" type="text" placeholder="Second number"></td>
+        <td><button type="button" ng-click="incB()">+1</button></td>
+        <td><button type="button" ng-click="decB()">-1</button></td>
+      </tr>
+    </table>
+
+    <p><b class="result" id="result"></b></p>
+  </div>
+
+  <script>
+    (function () {
+      var a = document.querySelector("input[ng-model='a']");
+      var b = document.querySelector("input[ng-model='b']");
+      var op = document.querySelector("select[ng-model='operation']");
+      var result = document.querySelector("b.result");
+
+      function toNumber(value) {
+        var n = parseFloat(value);
+        return isNaN(n) ? 0 : n;
+      }
+
+      function format(value) {
+        if (!isFinite(value)) return "null";
+        return String(value);
+      }
+
+      function render() {
+        var x = toNumber(a.value);
+        var y = toNumber(b.value);
+        var operation = op.value;
+        var value;
+
+        switch (operation) {
+          case "+": value = x + y; break;
+          case "-": value = x - y; break;
+          case "*": value = x * y; break;
+          case "/": value = x / y; break;
+          default: value = NaN;
+        }
+
+        result.textContent = x + " " + operation + " " + y + " = " + format(value);
+      }
+
+      [a, b, op].forEach(function (element) {
+        element.addEventListener("input", render);
+        element.addEventListener("change", render);
+      });
+
+      function step(field, delta) {
+        field.value = String(toNumber(field.value) + delta);
+        render();
+      }
+
+      document.querySelector("button[ng-click='incA()']").addEventListener("click", function () {
+        step(a, 1);
+      });
+      document.querySelector("button[ng-click='decA()']").addEventListener("click", function () {
+        step(a, -1);
+      });
+      document.querySelector("button[ng-click='incB()']").addEventListener("click", function () {
+        step(b, 1);
+      });
+      document.querySelector("button[ng-click='decB()']").addEventListener("click", function () {
+        step(b, -1);
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1,20 +1,28 @@
+import os
 import unittest
+from pathlib import Path
+
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.edge.options import Options
 
 from calc_pages.calc_page import CalculatorPage
+
+
+FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "simple_calculator.html"
+LIVE_URL = "https://www.globalsqa.com/angularJs-protractor/SimpleCalculator/"
 
 
 class TestSimpleCalculator(unittest.TestCase):
 
     def setUp(self):
-        chrome_options = Options()
-        chrome_options.add_argument("--headless=new")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        self.driver = webdriver.Chrome(options=chrome_options)
+        edge_options = Options()
+        edge_options.add_argument("--headless=new")
+        edge_options.add_argument("--disable-gpu")
+        edge_options.add_argument("--window-size=1280,900")
+        self.driver = webdriver.Edge(options=edge_options)
         self.calculator = CalculatorPage(self.driver)
-        self.calculator.open()
+        target_url = os.environ.get("CALC_URL") or FIXTURE_PATH.as_uri()
+        self.calculator.open(target_url)
 
     def tearDown(self):
         self.driver.quit()
