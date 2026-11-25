@@ -10,13 +10,18 @@ from calc_pages.calc_page import CalculatorPage
 
 FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "simple_calculator.html"
 LIVE_URL = "https://www.globalsqa.com/angularJs-protractor/SimpleCalculator/"
+SCREENSHOT_DIR = Path(__file__).resolve().parent.parent / "test_screen"
 
 
 class TestSimpleCalculator(unittest.TestCase):
 
     def setUp(self):
+        SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
+
         edge_options = Options()
-        edge_options.add_argument("--headless=new")
+        # По умолчанию браузер видимый. HEADLESS=1 включает скрытый режим.
+        if os.environ.get("HEADLESS", "").lower() in ("1", "true", "yes"):
+            edge_options.add_argument("--headless=new")
         edge_options.add_argument("--disable-gpu")
         edge_options.add_argument("--window-size=1280,900")
         self.driver = webdriver.Edge(options=edge_options)
@@ -25,7 +30,14 @@ class TestSimpleCalculator(unittest.TestCase):
         self.calculator.open(target_url)
 
     def tearDown(self):
-        self.driver.quit()
+        test_name = self.id().split(".")[-1]
+        screenshot_path = SCREENSHOT_DIR / f"{test_name}.png"
+        try:
+            self.driver.save_screenshot(str(screenshot_path))
+        except Exception as error:
+            print(f"Не удалось сохранить скриншот {screenshot_path}: {error}")
+        finally:
+            self.driver.quit()
 
     # ---------- Сложение ----------
     def test_addition_positive(self):
